@@ -2,24 +2,24 @@ import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-const FormContainer = styled.div`  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`;
+// const FormContainer = styled.div`  
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   height: 100vh;
+// `;
 
-const StyledInput = styled.input`  
-  margin: 10px 0;
-  width: 50%;
-`;
+// const StyledInput = styled.input`  
+//   margin: 10px 0;
+//   width: 50%;
+// `;
 
-const StyledTextArea = styled.textarea` 
-  margin: 10px 0;
-  width: 50%;
-  height: 100px;
-`;
+// const StyledTextArea = styled.textarea` 
+//   margin: 10px 0;
+//   width: 50%;
+//   height: 100px;
+// `;
 
 
 const MyComponent: React.FC = () => {
@@ -43,6 +43,8 @@ const MyComponent: React.FC = () => {
       }
     );
     setResponse(result.data);
+    console.log(result.data);
+    console.log(response);
     setIsLoading(false);
   };
 
@@ -58,34 +60,56 @@ const MyComponent: React.FC = () => {
   }
 
   return (
-    <FormContainer>
-      <StyledInput
-        list="model-names"
-        value={modelName}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setModel(e.target.value)}
-        placeholder="model name"
-      />
-      <datalist id="model-names">
-        {modelNames.map((name, index) => <option key={index} value={name} />)}
-      </datalist>
-      <StyledTextArea
-        value={sentence}
-        onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setSentence(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="sentence"
-      />
-      <button
-        onClick={submitForm}
-        disabled={isLoading}>
-        {isLoading ? "waiting" : "submit (cmd + enter)"}
-      </button>
-      <button
-        onClick={resetForm}
-        disabled={isLoading}>
-        reset
-      </button>
-      {response && <div>{JSON.stringify(response)}</div> }
-    </FormContainer>
+    <div className="py-6 container">
+      <div className="columns is-centered">
+        <div className="column is-two-thirds">
+          <h1 className="title">LLM playground</h1>
+          <div className="field">
+            <label className="label">Model Name</label>
+              <input
+                className="input"
+                type="text"
+                list="model-names"
+                value={modelName}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setModel(e.target.value)}
+                placeholder="model name"
+              />
+              <datalist id="model-names">
+                {modelNames.map((name, index) => <option key={index} value={name} />)}
+              </datalist>
+          </div>
+          <div className="field">
+            <label className="label">Sentence</label>
+            <div className='control'>
+              <textarea
+                className="textarea"
+                value={sentence}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setSentence(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="sentence"
+              />
+            </div>
+          </div>
+          <div className="field">
+            <div className="control">
+              <button
+                className='button is-link'
+                onClick={submitForm}
+                disabled={isLoading}>
+                {isLoading ? "waiting" : "submit (cmd + enter)"}
+              </button>
+              <button
+                className="button is-danger ml-2"
+                onClick={resetForm}
+                disabled={isLoading}>
+                reset
+              </button>
+            </div>
+          </div>
+          {isLoading ? <p>Loading...</p> : response && <p>Response:<br></br> {JSON.stringify(response)}</p>}
+        </div>
+      </div>
+    </div>
   );
 }; 
 
