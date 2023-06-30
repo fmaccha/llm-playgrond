@@ -36,8 +36,7 @@ const MyComponent: React.FC = () => {
 
   const submitForm = async () => {
     setIsLoading(true);
-    // const result = await axios.post('http://localhost:8000/process',
-    const result = await axios.post('http://host.docker.internal:8000/process',
+    const result = await axios.post('http://localhost:8000/process',
       {
         model_name: modelName,
         sentence: sentence

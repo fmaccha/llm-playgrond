@@ -1,45 +1,47 @@
-# Running LLM on a Local CPU Server
+# Simple web UI to run an LLM on a GPU of an M1 Mac
 
-## tl;dr
+This repository adapts the tool from [the original repository](https://github.com/suecharo/llm-playgrond) to:
 
-This guide explains how to run LLM on a local CPU server using Hugging Face's transformers library.
+- Perform computations on a GPU
+- Convert into a server using FastAPI
 
-## Purpose
+Additionally, this repository provides a web UI that makes use of these APIs.
 
-The primary objectives of this guide are:
-
-- To demonstrate how to run an LLM on a local CPU server.
-- As it stands, this guide only covers execution of the model.
-- To help in identifying the optimal model for a given task or dataset while considering the CPU resources and execution time.
+See [the original repository](https://github.com/suecharo/llm-playgrond) for more information.
 
 ## Environment
 
-This guide is primarily tested on an Ubuntu 22.04 CPU server. Here are the commands to set up the environment using Docker:
+This guide is tested on Ventura 13.3.
 
-```bash
-$ docker compose up -d --build
-$ docker compose exec app bash
+### backend
+
+Create a new conda environment.
+
+```sh
+conda create -n llm python=3.10.9
+conda activate llm
+pip3 install torch torchvision torchaudio
+pip3 uninstall -y llama-cpp-python
+CMAKE_ARGS="-DLLAMA_METAL=on" FORCE_CMAKE=1 pip3 install llama-cpp-python --no-cache-dir
+pip3 install -U --pre torch torchvision -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
 ```
 
-## Finding Models
+Go to the `backend` directory.
 
-You can find suitable models for your needs using the [Hugging Face's model hub](https://huggingface.co/models).
-
-Use the following URL format to make specific queries:
-
-https://huggingface.co/models?pipeline_tag=fill-mask&sort=downloads&search=bio
-
-<img width="800" src="https://github.com/suecharo/llm-playgrond/assets/26019402/05ba1297-966a-4360-8c79-6d00986d66bd">
-
-## Selecting a Pipeline
-
-You can choose a suitable pipeline from a list provided here: https://huggingface.co/tasks.
-
-## Code Snippets
-
-[./fill_mask.py](./fill_mask.py)
-
-```bash
-$ python3 fill_mask.py
-[{'score': 0.28551000356674194, 'token': 5105, 'token_str': 'p53', 'sequence': 'p53 is a tumor suppressor gene.'}, {'score': 0.16949528455734253, 'token': 13544, 'token_str': 'tp53', 'sequence': 'tp53 is a tumor suppressor gene.'}, {'score': 0.08561991900205612, 'token': 11779, 'token_str': 'brca1', 'sequence': 'brca1 is a tumor suppressor gene.'}, {'score': 0.07339842617511749, 'token': 9496, 'token_str': 'pten', 'sequence': 'pten is a tumor suppressor gene.'}, {'score': 0.06466531753540039, 'token': 2176, 'token_str': 'it', 'sequence': 'it is a tumor suppressor gene.'}]
+```sh
+cd backend
 ```
+
+Run the application.
+
+```sh
+uvicorn main:app
+```
+
+### web UI
+
+```sh
+docker compose up --build
+```
+
+Then browse to `http://localhost:3000/`.
